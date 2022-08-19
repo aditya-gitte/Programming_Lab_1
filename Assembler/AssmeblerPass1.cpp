@@ -189,6 +189,50 @@ class SymbolTable
     }
 };
 
+vector<string> stringSpliter(string s)
+{
+    string word;
+    vector<string> vec;
+    for( int i=0;i<s.length();i++)
+    {
+        if(s[i]==' ')
+        {
+            vec.push_back(word);
+            word="";
+        }
+        else
+        {
+            word+=s[i];
+        }
+    }
+    return vec;
+}
+
+class Assembly
+{
+    private:
+    vector<vector<string>> table;
+    public:
+    Assembly(string path)
+    {
+        ifstream af(path);
+        string ltext;
+        while(getline(af,ltext))
+        {
+            vector<string> row;
+            if(ltext[0]==' ' )
+            {
+                row.push_back(" ");
+            }
+            else
+            {
+                vector<string> remVec=stringSpliter(ltext);
+                
+            }
+        }
+    }
+};
+
 class Pass1
 {
     private:
