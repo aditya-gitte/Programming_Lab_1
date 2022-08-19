@@ -209,7 +209,8 @@ class Pass1
 
 int main()
 {
-    OpCodeTable ot("/home/pict/31229_Aditya/Programming_Lab_1/Assembler/Optable.txt");
+    OpCodeTable ot("Optable.txt");
     ot.printTable();
+    cout<<"RUNIING";
     return 0;
 }
