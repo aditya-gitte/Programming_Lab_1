@@ -189,11 +189,6 @@ class SymbolTable
     }
 };
 
-<<<<<<< HEAD
-vector<string> stringSpliter(string s)
-{
-    string word;
-=======
 class IntermediateTable
 {
     private:
@@ -220,7 +215,6 @@ class IntermediateTable
 vector<string> stringSpliter(string s)
 {
     string word="";
->>>>>>> da75258 (added assembly table)
     vector<string> vec;
     for( int i=0;i<s.length();i++)
     {
@@ -237,39 +231,18 @@ vector<string> stringSpliter(string s)
     return vec;
 }
 
-<<<<<<< HEAD
-class Assembly
-=======
 class AssemblyTable
->>>>>>> da75258 (added assembly table)
 {
     private:
     vector<vector<string>> table;
     public:
-<<<<<<< HEAD
-    Assembly(string path)
-    {
-=======
     AssemblyTable(string path)
     {
         cout<<"entered";
->>>>>>> da75258 (added assembly table)
         ifstream af(path);
         string ltext;
         while(getline(af,ltext))
         {
-<<<<<<< HEAD
-            vector<string> row;
-            if(ltext[0]==' ' )
-            {
-                row.push_back(" ");
-            }
-            else
-            {
-                vector<string> remVec=stringSpliter(ltext);
-                
-            }
-=======
             vector<string> row=stringSpliter(ltext);
             table.push_back(row);
         }
@@ -283,7 +256,6 @@ class AssemblyTable
         for(int i=0;i<table.size();i++)
         {
             cout<<table[i][0]<<"  "<<table[i][1]<<"  "<<table[i][2]<<"  "<<table[i][2]<<"\n";
->>>>>>> da75258 (added assembly table)
         }
     }
 };
@@ -316,17 +288,11 @@ class Pass1
 
 int main()
 {
-<<<<<<< HEAD
-    OpCodeTable ot("Optable.txt");
-    ot.printTable();
-    cout<<"RUNIING";
-=======
     // OpCodeTable ot("/home/pict/31229/Programming_Lab_1/Assembler/Optable.txt");
     cout<<"running";
     AssemblyTable at("/home/pict/31229/Programming_Lab_1/Assembler/assembly.txt");
     at.printAssemblyCode();
 
     // ot.printTable();
->>>>>>> da75258 (added assembly table)
     return 0;
 }
