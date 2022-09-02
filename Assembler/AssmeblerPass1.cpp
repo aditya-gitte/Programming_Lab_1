@@ -58,7 +58,7 @@ class OpCodeTable
             throw invalid_argument("the string entered is not is not in the given OPCODE table");
         }
         
-        
+        return table[0];
         
         
     }
@@ -127,7 +127,7 @@ class RegisterTable
             throw invalid_argument("the string entered is not is not in the given Register table");
         }
         
-        
+        return table[0];
     }
 };
 
@@ -189,9 +189,38 @@ class SymbolTable
     }
 };
 
+<<<<<<< HEAD
 vector<string> stringSpliter(string s)
 {
     string word;
+=======
+class IntermediateTable
+{
+    private:
+    vector<vector<string>> table;
+    public:
+    void append(vector<string> data)
+    {
+        table.push_back(data);
+    }
+    vector<vector<string>> getTable()
+    {
+        return table;
+    }
+    void printIntermediateTable()
+    {
+        for(int i=0;i<table.size();i++)
+        {
+            cout<<table[i][0]<<"  "<<table[i][1]<<"  "<<table[i][2]<<"  "<<table[i][3]<<"\n";
+        }
+    }
+    
+};
+
+vector<string> stringSpliter(string s)
+{
+    string word="";
+>>>>>>> da75258 (added assembly table)
     vector<string> vec;
     for( int i=0;i<s.length();i++)
     {
@@ -208,17 +237,28 @@ vector<string> stringSpliter(string s)
     return vec;
 }
 
+<<<<<<< HEAD
 class Assembly
+=======
+class AssemblyTable
+>>>>>>> da75258 (added assembly table)
 {
     private:
     vector<vector<string>> table;
     public:
+<<<<<<< HEAD
     Assembly(string path)
     {
+=======
+    AssemblyTable(string path)
+    {
+        cout<<"entered";
+>>>>>>> da75258 (added assembly table)
         ifstream af(path);
         string ltext;
         while(getline(af,ltext))
         {
+<<<<<<< HEAD
             vector<string> row;
             if(ltext[0]==' ' )
             {
@@ -229,6 +269,21 @@ class Assembly
                 vector<string> remVec=stringSpliter(ltext);
                 
             }
+=======
+            vector<string> row=stringSpliter(ltext);
+            table.push_back(row);
+        }
+    }
+    vector<vector<string>> getAssemblyTable()
+    {
+        return table;
+    }
+    void printAssemblyCode()
+    {
+        for(int i=0;i<table.size();i++)
+        {
+            cout<<table[i][0]<<"  "<<table[i][1]<<"  "<<table[i][2]<<"  "<<table[i][2]<<"\n";
+>>>>>>> da75258 (added assembly table)
         }
     }
 };
@@ -236,14 +291,22 @@ class Assembly
 class Pass1
 {
     private:
-
+    vector<string> code;
+    IntermediateTable *it;
     OpCodeTable *ot;
     RegisterTable *rt;
     public:
-    Pass1(string path1, string path2)
+    Pass1(string opCodePath, string registerTablePath,string assemblyCodePath)
     {
-        ot=new OpCodeTable(path1);
-        rt=new RegisterTable(path2);
+        ot=new OpCodeTable(opCodePath);
+        rt=new RegisterTable(registerTablePath);
+        it=new IntermediateTable();
+        ifstream asmFile(assemblyCodePath);
+        vector<string> lineVector;
+       
+        
+        string ltext;
+       
     }
     
     
@@ -253,8 +316,17 @@ class Pass1
 
 int main()
 {
+<<<<<<< HEAD
     OpCodeTable ot("Optable.txt");
     ot.printTable();
     cout<<"RUNIING";
+=======
+    // OpCodeTable ot("/home/pict/31229/Programming_Lab_1/Assembler/Optable.txt");
+    cout<<"running";
+    AssemblyTable at("/home/pict/31229/Programming_Lab_1/Assembler/assembly.txt");
+    at.printAssemblyCode();
+
+    // ot.printTable();
+>>>>>>> da75258 (added assembly table)
     return 0;
 }
