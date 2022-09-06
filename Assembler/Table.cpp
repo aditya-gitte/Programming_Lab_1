@@ -62,7 +62,7 @@ public:
         
     }
 
-    vector<string> getRowByColumn(int columnNumber, string key)
+    vector<string> getRowByColumnSearch(int columnNumber, string key)
     {
         
         for(int i=0;i<table.size();i++)
@@ -82,6 +82,11 @@ public:
             row.push_back("$");
        }
        table.push_back(row);
+    }
+
+    vector<string> getRowByIndex(int index)
+    {
+        return table[index];
     }
 
     void writeToTxt(string path)
