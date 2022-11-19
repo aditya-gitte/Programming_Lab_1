@@ -87,7 +87,7 @@ for rowIndex in range(len(sourceTable)):
             rowNext = [sourceTable[rowIndex + 1], nextLocation]
             intermediateTable.append(rowNext)
 
-        elif sourceTable[rowIndex][1] == "LTORG":
+        elif sourceTable[rowIndex][1] == "LTORG":   #handles LTORG
             poolTableCounter.append(len(poolTable))
             loc = int(intermediateTable[rowIndex][1])
             for poolnum in poolTable:
@@ -99,13 +99,14 @@ for rowIndex in range(len(sourceTable)):
             poolTable.clear()
 
 
-
-
-        else:
+        else:    #when the keyword encountered is neither origin or LTORG
             nextLocationIncrement = int(opTable[sourceTable[rowIndex][1]][2])
             nextLocation = str(int(intermediateTable[rowIndex][1]) + nextLocationIncrement)
             rowNext = [sourceTable[rowIndex + 1], nextLocation]
             intermediateTable.append(rowNext)
+
+    if intermediateTable[rowIndex][0][1] == "ORIGIN":    #removes the location counter from origin statements
+        intermediateTable[rowIndex][1] = " "
 
 # for rowIndex in range(len(intermediateTable)):
 
