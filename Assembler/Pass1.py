@@ -30,6 +30,7 @@ for line in lines:
 intermediateTable = []
 poolTable = []
 poolTableCounter = []
+poolTableHistory = []
 symbolTable = {}
 literalTable = {}
 lc = 0
@@ -69,33 +70,42 @@ for rowIndex in range(len(sourceTable)):
     if sourceTable[rowIndex][0] != " ":  # if label is present adds it to the label table
         symbolTable[sourceTable[rowIndex][0]] = intermediateTable[rowIndex][1]
 
-    if sourceTable[rowIndex][1]=="LTORG":
-        noOfLiterals=len(poolTable)
-        for i in range(noOfLiterals):
-
-
-
+    if len(sourceTable[rowIndex]) > 3:  # if literal present add it to the literal table (handles literal duplication)
+        if ifLiteral(sourceTable[rowIndex][3]):
+            flag = False
+            for poolnum in poolTableHistory:
+                if poolnum == getLiteral(sourceTable[rowIndex][3]):
+                    flag = True
+            if not flag:
+                poolTable.append(getLiteral(sourceTable[rowIndex][3]))
+                poolTableHistory.append(getLiteral(sourceTable[rowIndex][3]))
 
     if (rowIndex + 1) < len(sourceTable):  # checks if the next row exists or not
-        if sourceTable[rowIndex][1] != "ORIGIN":
-            nextLocationIncrement = int(opTable[sourceTable[rowIndex][1]][2])
-            nextLocation = str(int(intermediateTable[rowIndex][1]) + nextLocationIncrement)
-            rowNext = [sourceTable[rowIndex + 1], nextLocation]
-            intermediateTable.append(rowNext)
-        else:  # handles origin keyword
+        if sourceTable[rowIndex][1] == "ORIGIN":
             nextLocationIncrement = ProcessOriginSuffix(sourceTable[rowIndex][2])
             nextLocation = str(nextLocationIncrement)
             rowNext = [sourceTable[rowIndex + 1], nextLocation]
             intermediateTable.append(rowNext)
 
-    if len(sourceTable[rowIndex]) > 3:
-        if ifLiteral(sourceTable[rowIndex][3]):
-            flag = False
+        elif sourceTable[rowIndex][1] == "LTORG":
+            poolTableCounter.append(len(poolTable))
+            loc = int(intermediateTable[rowIndex][1])
             for poolnum in poolTable:
-                if poolnum == getLiteral(sourceTable[rowIndex][3]):
-                    flag = True
-            if not flag:
-                poolTable.append(getLiteral(sourceTable[rowIndex][3]))
+                literalTable[poolnum] = loc
+                loc += 1
+            nextLocation = str(loc + 1)
+            rowNext = [sourceTable[rowIndex + 1], nextLocation]
+            intermediateTable.append(rowNext)
+            poolTable.clear()
+
+
+
+
+        else:
+            nextLocationIncrement = int(opTable[sourceTable[rowIndex][1]][2])
+            nextLocation = str(int(intermediateTable[rowIndex][1]) + nextLocationIncrement)
+            rowNext = [sourceTable[rowIndex + 1], nextLocation]
+            intermediateTable.append(rowNext)
 
 # for rowIndex in range(len(intermediateTable)):
 
@@ -103,3 +113,5 @@ for rowIndex in range(len(sourceTable)):
 print(intermediateTable)
 print(symbolTable)
 print(poolTable)
+print(poolTableHistory)
+print(poolTableCounter)
