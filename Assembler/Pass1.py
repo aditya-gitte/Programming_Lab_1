@@ -98,6 +98,10 @@ for rowIndex in range(len(sourceTable)):
             intermediateTable.append(rowNext)
             poolTable.clear()
 
+        elif sourceTable[rowIndex][1] == "EQU":  # handles EQU
+            symbolTable[sourceTable[rowIndex][0]] = symbolTable[sourceTable[rowIndex][2]]
+            rowNext = [sourceTable[rowIndex + 1], intermediateTable[rowIndex][1]]
+            intermediateTable.append(rowNext)
 
         else:  # when the keyword encountered is neither origin or LTORG
             nextLocationIncrement = int(opTable[sourceTable[rowIndex][1]][2])
@@ -105,9 +109,8 @@ for rowIndex in range(len(sourceTable)):
             rowNext = [sourceTable[rowIndex + 1], nextLocation]
             intermediateTable.append(rowNext)
 
-    if intermediateTable[rowIndex][0][1] == "ORIGIN":  # removes the location counter from origin statements
+    if intermediateTable[rowIndex][0][1] == "ORIGIN" or intermediateTable[rowIndex][0][1] == "EQU":  # removes the location counter from origin statements
         intermediateTable[rowIndex][1] = " "
-
 
 print(intermediateTable)
 # Second Pass, till now the symbol table and literal table have already been created and the location counter has been,
@@ -117,19 +120,24 @@ for key in opTable.keys():  # removed the length of the instruction from opcode 
     opTable[key].pop(2)
 
 ltorgCounter = 0  # handling the LTORG
-while ltorgCounter < len(poolTableCounter):       #used for handling multiple LTORG statements
+while ltorgCounter < len(poolTableCounter):  # used for handling multiple LTORG statements
     for rowIndex in range(len(intermediateTable)):
         if intermediateTable[rowIndex][0][1] == "LTORG":
             print(f"{ltorgCounter} this is ltorg table")
             print(poolTableCounter[ltorgCounter])
             noOfLiteralToRead = poolTableCounter[ltorgCounter]
-            for i in range(noOfLiteralToRead):   # adds 2 rows in intermediate table as two literal have been assigned address at this LTORG
+            for i in range(
+                    noOfLiteralToRead):  # adds 2 rows in intermediate table as two literal have been assigned address at this LTORG
                 interRow = [intermediateTable[rowIndex][0], str(literalTable[poolTableHistory[i]])]
-                print(f"Added a row at {rowIndex+i}")
-                intermediateTable.insert(rowIndex + i+1, interRow)
-            del intermediateTable[rowIndex + i]   # removes the initial LTORG statement
+                print(f"Added a row at {rowIndex + i}")
+                intermediateTable.insert(rowIndex + i + 1, interRow)
+            del intermediateTable[rowIndex + i]  # removes the initial LTORG statement
             ltorgCounter += 1
             break
+
+# adding the remaining data in the intermediate table
+# for rowIndex in range(len(intermediateTable)):
+
 
 print("printing tables")
 print(intermediateTable)
