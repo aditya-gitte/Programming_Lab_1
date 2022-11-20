@@ -10,6 +10,14 @@ for line in lines:
     wordlist.pop(0)
     opTable[key] = wordlist
 
+registerTable = {}
+with open("Registers.txt") as RegisterFile:
+    lines = [line.rstrip() for line in RegisterFile]
+
+for line in lines:
+    wordlist = line.split()
+    registerTable[wordlist[0]] = wordlist[1]
+
 sourceTable = []
 with open("Assembly.txt") as AssemblyFile:
     lines = [line.rstrip() for line in AssemblyFile]
@@ -109,7 +117,8 @@ for rowIndex in range(len(sourceTable)):
             rowNext = [sourceTable[rowIndex + 1], nextLocation]
             intermediateTable.append(rowNext)
 
-    if intermediateTable[rowIndex][0][1] == "ORIGIN" or intermediateTable[rowIndex][0][1] == "EQU":  # removes the location counter from origin statements
+    if intermediateTable[rowIndex][0][1] == "ORIGIN" or intermediateTable[rowIndex][0][
+        1] == "EQU":  # removes the location counter from origin statements
         intermediateTable[rowIndex][1] = " "
 
 print(intermediateTable)
@@ -135,14 +144,22 @@ while ltorgCounter < len(poolTableCounter):  # used for handling multiple LTORG 
             ltorgCounter += 1
             break
 
+# inverting the key value relation in the literal table dictionary for easier access
+invLiteralTable = {}
+for k, v in literalTable.items():
+    invLiteralTable[v] = k
+
 # adding the remaining data in the intermediate table
 # for rowIndex in range(len(intermediateTable)):
 
 
-print("printing tables")
-print(intermediateTable)
-print(symbolTable)
-print(poolTable)
-print(poolTableHistory)
-print(poolTableCounter)
-print(literalTable)
+print("===============================================Printing tables=================================================")
+
+print(f"Register table: {registerTable}")
+print(f"Intermediate table: {intermediateTable}")
+print(f"Symbol Table {symbolTable}")
+print(f"Pool Table: {poolTable}")
+print(f"Pool History Table: {poolTableHistory}")
+print(f"Pool table counter {poolTableCounter}")
+print(f"Literal Table: {literalTable}")
+print(f"Inverse Literal Table: {invLiteralTable}")
