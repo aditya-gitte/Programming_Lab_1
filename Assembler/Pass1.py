@@ -18,10 +18,18 @@ for line in lines:
     wordlist = line.split()
     registerTable[wordlist[0]] = wordlist[1]
 
+conditionTable = {}
+with open("Conditions.txt") as ConditionFile:
+    lines = [line.rstrip() for line in ConditionFile]
+
+for line in lines:
+    wordlist = line.split()
+    conditionTable[wordlist[0]] = wordlist[1]
+
 sourceTable = []
 with open("Assembly.txt") as AssemblyFile:
     lines = [line.rstrip() for line in AssemblyFile]
-    print(lines)
+
 for line in lines:
     row = []
     if line[0] == ' ':
@@ -34,6 +42,11 @@ for line in lines:
         for word in wordlist:
             row.append(word)
     sourceTable.append(row)
+for lineList in sourceTable:
+    if len(lineList)<4:
+        remainingspaces=4-len(lineList)
+        for i in range(remainingspaces):
+            lineList.append(" ")
 
 intermediateTable = []
 poolTable = []
@@ -149,13 +162,74 @@ invLiteralTable = {}
 for k, v in literalTable.items():
     invLiteralTable[v] = k
 
+def KeyPresntInDictionary(dic,key):
+    flag=False
+    for k in dic.keys():
+        if k==key:
+            flag=True
+            break
+    return flag
+
 # adding the remaining data in the intermediate table
-# for rowIndex in range(len(intermediateTable)):
+for rowIndex in range(len(intermediateTable)):
+    if intermediateTable[rowIndex][0][1] == "START":
+        intermediateTable[rowIndex].append(opTable["START"])
+        intermediateTable[rowIndex].append(f"(C,{intermediateTable[rowIndex][0][2]})")
+        intermediateTable[rowIndex].append(" ")
+    elif intermediateTable[rowIndex][0][1] == "LTORG":
+        intermediateTable[rowIndex].append(opTable["LTORG"])
+        intermediateTable[rowIndex].append(f"(C,{invLiteralTable[int(intermediateTable[rowIndex][1])]})")
+        intermediateTable[rowIndex].append(" ")
+    elif intermediateTable[rowIndex][0][1] == "EQU":
+        intermediateTable[rowIndex].append(" ")
+        intermediateTable[rowIndex].append(" ")
+        intermediateTable[rowIndex].append(" ")
+    elif intermediateTable[rowIndex][0][1] == "ORIGIN":
+        intermediateTable[rowIndex].append(opTable[intermediateTable[rowIndex][0][1]])
+        str = intermediateTable[rowIndex][0][2]
+        splitCharacter='+'
+        for char in str:
+            if char == '-':
+                splitCharacter='-'
+                break
+        wordlist=str.split(splitCharacter)
+        appendstr = f"(S,{list(symbolTable).index(wordlist[0])+1}){splitCharacter}{wordlist[1]})"
+        intermediateTable[rowIndex].append(appendstr)
+        intermediateTable[rowIndex].append(" ")
+    elif intermediateTable[rowIndex][0][1] == "DS":
+        intermediateTable[rowIndex].append(opTable[intermediateTable[rowIndex][0][1]])
+        intermediateTable[rowIndex].append(f"(C,{intermediateTable[rowIndex][0][2]})")
+        intermediateTable[rowIndex].append(" ")
+    else:
+        intermediateTable[rowIndex].append(opTable[intermediateTable[rowIndex][0][1]])
+        operand1=intermediateTable[rowIndex][0][2]
+        if operand1 ==" ":
+            intermediateTable[rowIndex].append(" ")
+        elif operand1 == "AREG" or operand1 == "BREG" or operand1 == "CREG" or operand1 == "DREG":
+            intermediateTable[rowIndex].append(registerTable[operand1])
+        elif KeyPresntInDictionary(conditionTable,operand1):
+            intermediateTable[rowIndex].append(f"(CT,{conditionTable[operand1]})")
+        else:  #means that the operand is SYMMBOL from the SYMBOL TABLE
+            intermediateTable[rowIndex].append(f"(S,{list(symbolTable).index(operand1)+1})")
+        operand2 = intermediateTable[rowIndex][0][3]
+        if operand2==" ":
+            intermediateTable[rowIndex].append(" ")
+        elif ifLiteral(operand2):
+            lit=getLiteral(operand2)
+            intermediateTable[rowIndex].append(f"(L,{list(literalTable).index(lit)+1})")
+        elif KeyPresntInDictionary(conditionTable,operand2):
+            intermediateTable[rowIndex].append(f"(CT,{conditionTable[operand2]})")
+        else:
+            intermediateTable[rowIndex].append(f"(S,{list(symbolTable).index(operand2)+1})")
+
+
+
 
 
 print("===============================================Printing tables=================================================")
 
 print(f"Register table: {registerTable}")
+print(f"Conditions Table: {conditionTable}")
 print(f"Intermediate table: {intermediateTable}")
 print(f"Symbol Table {symbolTable}")
 print(f"Pool Table: {poolTable}")
