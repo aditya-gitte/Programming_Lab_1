@@ -43,8 +43,8 @@ for line in lines:
             row.append(word)
     sourceTable.append(row)
 for lineList in sourceTable:
-    if len(lineList)<4:
-        remainingspaces=4-len(lineList)
+    if len(lineList) < 4:
+        remainingspaces = 4 - len(lineList)
         for i in range(remainingspaces):
             lineList.append(" ")
 
@@ -59,10 +59,21 @@ lc = 0
 
 def ProcessOriginSuffix(str):
     strList = []
-    strList = str.split('+')
+    splitCharacter = '+'
+    for char in str:
+        if char == '-':
+            splitCharacter = '-'
+            break
+    strList = str.split(splitCharacter)
     firstint = int(symbolTable[strList[0]])
     secondint = int(strList[1])
-    return firstint + secondint
+    if splitCharacter=='+':
+        return firstint + secondint
+    else:
+        return firstint - secondint
+
+
+
 
 
 def ifLiteral(str):
@@ -162,13 +173,15 @@ invLiteralTable = {}
 for k, v in literalTable.items():
     invLiteralTable[v] = k
 
-def KeyPresntInDictionary(dic,key):
-    flag=False
+
+def KeyPresntInDictionary(dic, key):
+    flag = False
     for k in dic.keys():
-        if k==key:
-            flag=True
+        if k == key:
+            flag = True
             break
     return flag
+
 
 # adding the remaining data in the intermediate table
 for rowIndex in range(len(intermediateTable)):
@@ -187,13 +200,13 @@ for rowIndex in range(len(intermediateTable)):
     elif intermediateTable[rowIndex][0][1] == "ORIGIN":
         intermediateTable[rowIndex].append(opTable[intermediateTable[rowIndex][0][1]])
         str = intermediateTable[rowIndex][0][2]
-        splitCharacter='+'
+        splitCharacter = '+'
         for char in str:
             if char == '-':
-                splitCharacter='-'
+                splitCharacter = '-'
                 break
-        wordlist=str.split(splitCharacter)
-        appendstr = f"(S,{list(symbolTable).index(wordlist[0])+1}){splitCharacter}{wordlist[1]})"
+        wordlist = str.split(splitCharacter)
+        appendstr = f"(S,{list(symbolTable).index(wordlist[0]) + 1}){splitCharacter}{wordlist[1]})"
         intermediateTable[rowIndex].append(appendstr)
         intermediateTable[rowIndex].append(" ")
     elif intermediateTable[rowIndex][0][1] == "DS":
@@ -202,29 +215,25 @@ for rowIndex in range(len(intermediateTable)):
         intermediateTable[rowIndex].append(" ")
     else:
         intermediateTable[rowIndex].append(opTable[intermediateTable[rowIndex][0][1]])
-        operand1=intermediateTable[rowIndex][0][2]
-        if operand1 ==" ":
+        operand1 = intermediateTable[rowIndex][0][2]
+        if operand1 == " ":
             intermediateTable[rowIndex].append(" ")
         elif operand1 == "AREG" or operand1 == "BREG" or operand1 == "CREG" or operand1 == "DREG":
             intermediateTable[rowIndex].append(registerTable[operand1])
-        elif KeyPresntInDictionary(conditionTable,operand1):
+        elif KeyPresntInDictionary(conditionTable, operand1):
             intermediateTable[rowIndex].append(f"(CT,{conditionTable[operand1]})")
-        else:  #means that the operand is SYMMBOL from the SYMBOL TABLE
-            intermediateTable[rowIndex].append(f"(S,{list(symbolTable).index(operand1)+1})")
+        else:  # means that the operand is SYMBOL from the SYMBOL TABLE
+            intermediateTable[rowIndex].append(f"(S,{list(symbolTable).index(operand1) + 1})")
         operand2 = intermediateTable[rowIndex][0][3]
-        if operand2==" ":
+        if operand2 == " ":
             intermediateTable[rowIndex].append(" ")
         elif ifLiteral(operand2):
-            lit=getLiteral(operand2)
-            intermediateTable[rowIndex].append(f"(L,{list(literalTable).index(lit)+1})")
-        elif KeyPresntInDictionary(conditionTable,operand2):
+            lit = getLiteral(operand2)
+            intermediateTable[rowIndex].append(f"(L,{list(literalTable).index(lit) + 1})")
+        elif KeyPresntInDictionary(conditionTable, operand2):
             intermediateTable[rowIndex].append(f"(CT,{conditionTable[operand2]})")
         else:
-            intermediateTable[rowIndex].append(f"(S,{list(symbolTable).index(operand2)+1})")
-
-
-
-
+            intermediateTable[rowIndex].append(f"(S,{list(symbolTable).index(operand2) + 1})")
 
 print("===============================================Printing tables=================================================")
 
