@@ -2,19 +2,20 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Server
+public class Server extends Thread
 {
-
-    public static void main(String[] args)
+    Socket s;
+    Server(Socket s)
+    {
+        this.s=s;
+    }
+    @Override
+    public void run()
     {
         try
         {
-            Scanner z = new Scanner(System.in);
-
-            ServerSocket ss = new ServerSocket(6563);
-            Socket s = ss.accept();// establishes connection
             String ip=s.getRemoteSocketAddress().toString();
-            System.out.println("connected to "+ip);
+            System.out.println("Connected to "+ip+"\n---------------------------");
 
             DataInputStream din = new DataInputStream(s.getInputStream());
             DataOutputStream dout = new DataOutputStream(s.getOutputStream());
@@ -28,23 +29,21 @@ public class Server
                 str= din.readUTF();
                 if(str.equals("stop"))
                 {
+                    System.out.println("Ending Connection with "+ip+"\n---------------------------");
                     break;
                 }
-                System.out.println("Client "+ip+" says "+str);
+                System.out.println("Client "+ip+" says "+str+"\n---------------------------");
+                System.out.println("Sent acknowledgement to client "+ip+"\n---------------------------\"");
 
-                System.out.println("Enter the message for the client "+ ip);
-                str2=z.nextLine();
+                str2="==============Received your message: "+str+"==================";
                 dout.writeUTF(str2);
                 dout.flush();
-                if(str2.equals("stop"))
-                {
-                    break;
-                }
+
             }
 
             din.close();
             s.close();
-            ss.close();
+
 
 
 
@@ -53,4 +52,5 @@ public class Server
             System.out.println(e);
         }
     }
+
 }
